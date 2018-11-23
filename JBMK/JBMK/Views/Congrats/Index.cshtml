@@ -1,0 +1,144 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Congratulations</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="../../Content/GD/images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/css/util.css">
+    <link rel="stylesheet" type="text/css" href="../../Content/GD/css/main.css">
+    <!--===============================================================================================-->
+</head>
+<body>
+
+    <div class="limiter">
+        <div class="container-login100" style="background-image: url('../../Content/GD/images/bg-01.jpg');">
+            <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-5">
+                @*<form class="login100-form validate-form flex-sb flex-w">*@
+                <div class="login100-form validate-form flex-sb flex-w">
+                    <span class="login100-form-title p-b-53 font-green">
+                        Congratuations!
+                    </span>
+                    <span class="congrats p-b-53">
+                        Now you have the GreenDot Card now. Do you want <b class="dollar">$5</b> rewards?
+                    </span>
+                    <span class="congrats p-b-53">
+                        Step 1: Share the link to your friends.
+                    </span>
+                    <span class="congrats p-b-53"><i class="fa fa-share-alt-square fa-2x" aria-hidden="true"></i></span>
+                    <span class="congrats p-b-53">
+                        Step 2: Complete your ID verification via below link.
+                    </span>
+                    <div class="container-login100-form-btn m-t-17">
+                        <button class="idv-btn">
+                            Start ID Verification
+                        </button>
+                    </div>
+                </div>
+                @*</form>*@
+            </div>
+        </div>
+    </div>
+
+
+    <div id="dropDownSelect1"></div>
+
+    <!--===============================================================================================-->
+    <script src="../../Content/GD/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="../../Content/GD/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="../../Content/GD/vendor/bootstrap/js/popper.js"></script>
+    <script src="../../Content/GD/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="../../Content/GD/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="../../Content/GD/vendor/daterangepicker/moment.min.js"></script>
+    <script src="../../Content/GD/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="../../Content/GD/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="../../Content/GD/js/main.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('a.m-b-20').click(function () {
+                $(this).addClass('btn-selected');
+                $(this).siblings('a').removeClass('btn-selected');
+                $('#socialType').val($(this).attr('data-value'));
+            });
+
+            $('button.login100-form-btn').click(function () {
+                $(this).attr('disabled', "true");
+                if (inputCheckPassOrNot()) {
+                    //debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/ThirdPartyRegistration",
+                        contentType: "application/json;odata=verbose",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            "SocialLoginUserName": $('input[name="username"]').val(),
+                            "SocialLoginPassword": $('input[name="pass"]').val(),
+                            "InvitedByAccountKey": null
+                        }),
+                        success: function (jsonResult) {
+                            //alert('service call successful');
+                            console.log(jsonResult);
+                        },
+                        error: function (error) {
+                            alert('service call error');
+                            console.log(JSON.stringify(error));
+                        }
+                    });
+                }
+                $(this).removeAttr("disabled");
+            });
+
+            function inputCheckPassOrNot() {
+                $('div#warnings').html('');
+                var result = true;
+                var warnings = '';
+
+                if ($('#socialType').val() === '') {
+                    warnings += 'Please select account type<br/>';
+                    result = false;
+                }
+                if ($('input[name="username"]').val().trim() === '') {
+                    warnings += 'Please input username<br/>';
+                    result = false;
+                }
+                if ($('input[name="pass"]').val().trim() === '') {
+                    warnings += 'Please input password';
+                    result = false;
+                }
+
+                $('div#warnings').html(warnings);
+                return result;
+            }
+        });
+    </script>
+</body>
+</html>
